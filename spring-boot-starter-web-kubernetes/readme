@@ -1,0 +1,12 @@
+# run in docker
+su -
+cd /home/hsiehpinghan/git/boot/spring-boot-starter-web-boot
+./mvnw install dockerfile:build
+docker login -u <<USERNAME>> -p <<PASSWORD>>
+./mvnw install dockerfile:push
+docker run -e "SPRING_PROFILES_ACTIVE=prod" --net="host" -p 8080:8080 -t hsiehpinghan/spring-boot-starter-web-boot:1.0.0
+docker ps -all
+docker kill <<CONTAINER ID>>
+docker rm <<CONTAINER ID>>
+docker images
+docker rmi <<IMAGE ID>>
