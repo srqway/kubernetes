@@ -4,6 +4,16 @@ public abstract class CrudCriteria {
 	private Integer id;
 	private String string;
 
+	public CrudCriteria() {
+		super();
+	}
+
+	public CrudCriteria(Integer id, String string) {
+		super();
+		this.id = id;
+		this.string = string;
+	}
+
 	public Integer getId() {
 		return id;
 	}

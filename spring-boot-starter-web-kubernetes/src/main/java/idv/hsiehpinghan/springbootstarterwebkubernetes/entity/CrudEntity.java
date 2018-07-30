@@ -22,11 +22,6 @@ public class CrudEntity implements Serializable {
 		this.string = string;
 	}
 
-	public CrudEntity(String string) {
-		super();
-		this.string = string;
-	}
-
 	public Integer getId() {
 		return id;
 	}

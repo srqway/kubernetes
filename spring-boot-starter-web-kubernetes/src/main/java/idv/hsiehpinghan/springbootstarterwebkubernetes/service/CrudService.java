@@ -1,8 +1,10 @@
 package idv.hsiehpinghan.springbootstarterwebkubernetes.service;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,19 +19,19 @@ public class CrudService {
 	private CrudRepository repository;
 
 	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
-	public List<CrudEntity> findAll() {
-		return repository.findAll();
+	public Optional<CrudEntity> getOne(Integer id) {
+		return repository.findById(id);
 	}
 
 	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
-	public CrudEntity getOne(Integer id) {
-		return repository.getOne(id);
+	public boolean existsById(Integer id) {
+		return repository.existsById(id);
 	}
 
 	public void save(CrudEntity entity) {
 		Integer id = entity.getId();
-		CrudEntity oldEntity = repository.getOne(id);
-		if (oldEntity != null) {
+		Optional<CrudEntity> oldEntity = repository.findById(id);
+		if (oldEntity.isPresent() == true) {
 			throw new RuntimeException(String.format("oldEntity(%s) exists !!!", oldEntity));
 		}
 		repository.save(entity);
@@ -37,18 +39,23 @@ public class CrudService {
 
 	public void update(CrudEntity entity) {
 		Integer id = entity.getId();
-		CrudEntity oldEntity = repository.getOne(id);
-		if (oldEntity == null) {
+		Optional<CrudEntity> oldEntity = repository.findById(id);
+		if (oldEntity.isPresent() == false) {
 			throw new RuntimeException(String.format("entity(%s) not exists !!!", entity));
 		}
 		repository.save(entity);
 	}
 
 	public void delete(Integer id) {
-		CrudEntity oldEntity = repository.getOne(id);
-		if (oldEntity == null) {
+		Optional<CrudEntity> oldEntity = repository.findById(id);
+		if (oldEntity.isPresent() == false) {
 			throw new RuntimeException(String.format("oldEntity(%s) not exists !!!", oldEntity));
 		}
 		repository.deleteById(id);
+	}
+
+	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	public Page<CrudEntity> findAll(Pageable pageable) {
+		return repository.findAll(pageable);
 	}
 }
